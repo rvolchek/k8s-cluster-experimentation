@@ -11,7 +11,7 @@ metadata:
   name: kuberay-operator
   namespace: argocd
   finalizers:
-    - resources-finalizer.argocd.io
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
@@ -24,3 +24,5 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
+      # Ray CRDs exceed the 256KB annotation limit of client-side apply; SSA avoids it.
+      - ServerSideApply=true

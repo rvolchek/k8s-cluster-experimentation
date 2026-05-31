@@ -14,7 +14,7 @@ metadata:
   name: root
   namespace: argocd
   finalizers:
-    - resources-finalizer.argocd.io
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
