@@ -1,0 +1,19 @@
+# Exposes the Argo CD web UI to the tailnet as an HTTPS endpoint via the Tailscale
+# operator. Resulting URL: https://argocd.<your-tailnet>.ts.net (e.g. tail2f47eb.ts.net).
+# Tailscale provisions the Let's Encrypt cert and terminates TLS, forwarding plain
+# HTTP to argocd-server (which runs in insecure mode, see values.yaml).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  ingressClassName: tailscale
+  defaultBackend:
+    service:
+      name: argocd-server
+      port:
+        number: 80
+  tls:
+    - hosts:
+        - argocd

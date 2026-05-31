@@ -1,0 +1,26 @@
+# Argo CD Application for the KubeRay operator.
+# Pulls the chart from Ray's public Helm repo at a pinned version, installs into
+# its own namespace. Default chart values are fine to start; add a `helm.values`
+# block here later to tune the operator (resources, image, etc.).
+#
+# Manual sync (no syncPolicy.automated) per the chosen workflow: Argo shows this as
+# OutOfSync until you click Sync.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kuberay-operator
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.io
+spec:
+  project: default
+  source:
+    repoURL: https://ray-project.github.io/kuberay-helm/
+    chart: kuberay-operator
+    targetRevision: 1.6.0
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kuberay-operator
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

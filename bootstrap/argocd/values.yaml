@@ -1,0 +1,6 @@
+# Helm values for installing Argo CD itself (bootstrap, run manually once per cluster).
+# server.insecure: Argo serves plain HTTP internally; TLS is terminated by the
+# Tailscale Ingress in front of it (see ingress.yaml). Avoids double-TLS / redirect loops.
+configs:
+  params:
+    server.insecure: "true"

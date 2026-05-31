@@ -1,0 +1,31 @@
+# App-of-apps ROOT for the docker-desktop cluster.
+# This is the single Application you apply by hand after Argo CD is installed.
+# It watches the platform/ directory in this repo and creates one Argo Application
+# per subfolder found there. Adding a new platform component later = commit a new
+# platform/<name>/application.yaml and sync this root.
+#
+# Sync is MANUAL (no syncPolicy.automated): you trigger sync from the Argo UI/CLI
+# so you can review the diff before anything is created. Syncing root only creates
+# the child Application objects; each child app then has its own manual sync to
+# actually deploy its workload.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/rvolchek/k8s-cluster-experimentation
+    targetRevision: main
+    path: platform
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
